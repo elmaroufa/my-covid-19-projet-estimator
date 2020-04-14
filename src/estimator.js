@@ -1,5 +1,5 @@
-//function return timeToElapse in the days format 
-const convertTimeToElaoseToDay = (periodType,timeToElapse) => {
+// function return timeToElapse in the days format 
+const convertTimeToElaoseToDay = (periodType, timeToElapse) => {
     
     if(periodType === 'weeks')
    {
@@ -14,41 +14,41 @@ const convertTimeToElaoseToDay = (periodType,timeToElapse) => {
     }
 }
 
-//function calcul power to day using estimate currentlyInfected
+// function calcul power to day using estimate currentlyInfected
 const powerToDays = (days) => {
-   return Math.trunc(days/3);
+   return Math.trunc(days / 3);
 }
 
-//function calcul currentlyInfected
-const calculCurrentlyInfected = (reportedCases,multiple) => {
+// function calcul currentlyInfected
+const calculCurrentlyInfected = (reportedCases, multiple) => {
    return reportedCases * multiple;
 }
 
-/*function calcul infection by requested 
+/* function calcul infection by requested 
 @param currentlyInfected
 @param mypowerToDays
-**/
-const calculInfectionByRequestedTime = (currentlyInfected,mypowerToDays) => {
-   return currentlyInfected * Math.pow(2,mypowerToDays);
+*/
+const calculInfectionByRequestedTime = (currentlyInfected, mypowerToDays) => {
+   return currentlyInfected * Math.pow(2, mypowerToDays);
 }
 
-//function calcul severe CaseBy requested Time
+// function calcul severe CaseBy requested Time
 const calculSevereCaseByrequestedTime = (infectionByRequestedTime) => {
    return Math.trunc(infectionByRequestedTime * 0.15);
 }
 
-//function calcul value hospital beds by requested time
-const caclulHospitalBedsByRequestedTime = (hospitalBeds,severeCasesByRequestedTime) => {
+// function calcul value hospital beds by requested time
+const caclulHospitalBedsByRequestedTime = (hospitalBeds, severeCasesByRequestedTime) => {
    let value = 0.35 * hospitalBeds;
    return Math.trunc(value - severeCasesByRequestedTime);
 }
 
-//function calcul casesForICUByRequestedTime
+// function calcul casesForICUByRequestedTime
 const calculcasesForICUByRequestedTime = (infectionsByRequestedTime) => {
    return Math.trunc( 0.05 * infectionsByRequestedTime);
 }
 
-//function calcul casesForVentilatorsByRequestedTime
+// function calcul casesForVentilatorsByRequestedTime
 const calculcasesForVentilatorsByRequestedTime = (infectionsByRequestedTime) => {
    return Math.trunc(0.02 * infectionsByRequestedTime);
 }
@@ -65,8 +65,9 @@ const calculDollarsInFlight = (infectionByRequestedTime, periodeDay, avgDailyInc
 
 const covid19ImpactEstimator = (data) => {
     const input = data;
-    let daysCacul = convertTimeToElaoseToDay(data.periodType,data.timeToElapse);
+    let daysCacul = convertTimeToElaoseToDay(data.periodType, data.timeToElapse);
     let mypowerToDays = powerToDays(daysCacul);
+
     /**
      * variable end Ip = impact  and variable end Si = SevereImpact
      * declaration des variables et calcul des attributs de impact et severeimpact
@@ -77,36 +78,36 @@ const covid19ImpactEstimator = (data) => {
     let valInfectionByRequestedTimeSi = calculInfectionByRequestedTime(valCurrentlyInfectedSi, mypowerToDays);
     let valSevereCaseByrequestedTimeIp = calculSevereCaseByrequestedTime(valInfectionByRequestedTimeIp);
     let valSevereCaseByrequestedTimeSi = calculSevereCaseByrequestedTime(valInfectionByRequestedTimeSi);
-    let valHospitalBedsByRequestedTimeIp = caclulHospitalBedsByRequestedTime(data.totalHospitalBeds,valSevereCaseByrequestedTimeIp);
-    let valHospitalBedsByRequestedTimeSi = caclulHospitalBedsByRequestedTime(data.totalHospitalBeds,valSevereCaseByrequestedTimeSi);
+    let valHospitalBedsByRequestedTimeIp = caclulHospitalBedsByRequestedTime(data.totalHospitalBeds, valSevereCaseByrequestedTimeIp);
+    let valHospitalBedsByRequestedTimeSi = caclulHospitalBedsByRequestedTime(data.totalHospitalBeds, valSevereCaseByrequestedTimeSi);
     let valCasesForICUByRequestedTimeIp = calculcasesForICUByRequestedTime(valInfectionByRequestedTimeIp);
     let valCasesForICUByRequestedTimeSi = calculcasesForICUByRequestedTime(valInfectionByRequestedTimeSi);
     let valcasesForVentilatorsByRequestedTimeIp = calculcasesForVentilatorsByRequestedTime(valInfectionByRequestedTimeIp);
     let valcasesForVentilatorsByRequestedTimeSi = calculcasesForVentilatorsByRequestedTime(valInfectionByRequestedTimeSi);
-    let valdollarsInFlightIp = calculDollarsInFlight(valInfectionByRequestedTimeIp,daysCacul,data.region.avgDailyIncomeInUSD,data.region.avgDailyIncomePopulation);
-    let valdollarsInFlightSi = calculDollarsInFlight(valInfectionByRequestedTimeSi,daysCacul,data.region.avgDailyIncomeInUSD,data.region.avgDailyIncomePopulation)
+    let valdollarsInFlightIp = calculDollarsInFlight(valInfectionByRequestedTimeIp, daysCacul, data.region.avgDailyIncomeInUSD, data.region.avgDailyIncomePopulation);
+    let valdollarsInFlightSi = calculDollarsInFlight(valInfectionByRequestedTimeSi, daysCacul, data.region.avgDailyIncomeInUSD, data.region.avgDailyIncomePopulation)
     return {
         data: data,
-        estimate:{
-        impact:{
+        estimate: {
+        impact: {
             currentlyInfected: valCurrentlyInfectedIp,
             infectionByRequestedTime: valInfectionByRequestedTimeIp,
-            severeCasesByRequestedTime:valSevereCaseByrequestedTimeIp,
+            severeCasesByRequestedTime: valSevereCaseByrequestedTimeIp,
             hospitalBedsByRequestedTime: valHospitalBedsByRequestedTimeIp,
             casesForICUByRequestedTime: valCasesForICUByRequestedTimeIp,
-            casesForVentilatorsByRequestedTime:valcasesForVentilatorsByRequestedTimeIp,
-            dollarsInFlight:valdollarsInFlightIp
+            casesForVentilatorsByRequestedTime: valcasesForVentilatorsByRequestedTimeIp,
+            dollarsInFlight: valdollarsInFlightIp
         },
-        severeImpact:{
-            currentlyInfected:valCurrentlyInfectedSi,
+        severeImpact: {
+            currentlyInfected: valCurrentlyInfectedSi,
             infectionByRequestedTime: valInfectionByRequestedTimeSi,
-            severeCasesByRequestedTime:valSevereCaseByrequestedTimeSi,
+            severeCasesByRequestedTime: valSevereCaseByrequestedTimeSi,
             hospitalBedsByRequestedTime: valHospitalBedsByRequestedTimeSi,
             casesForICUByRequestedTime: valCasesForICUByRequestedTimeSi,
-            casesForVentilatorsByRequestedTime:valcasesForVentilatorsByRequestedTimeSi,
-            dollarsInFlight:valdollarsInFlightSi
+            casesForVentilatorsByRequestedTime: valcasesForVentilatorsByRequestedTimeSi,
+            dollarsInFlight: valdollarsInFlightSi
         }
-    }
+     }
     }
 };
 
